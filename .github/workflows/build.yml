@@ -1,0 +1,56 @@
+name: Build Lex Programs
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install Dependencies (Flex and GCC)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y flex gcc
+
+    - name: Compile all .l programs
+      run: |
+        # Find all .l files recursively and compile them
+        find . -type f -name "*.l" | while read -r file; do
+          echo "========================================"
+          echo "Compiling $file..."
+          
+          # Get directory and base filename
+          dir=$(dirname "$file")
+          base=$(basename "$file" .l)
+          
+          # Navigate to the file's directory to keep lex.yy.c local
+          cd "$dir"
+          
+          # Generate C code from Lex file
+          flex "$base.l"
+          
+          # Compile the generated C code
+          # Using -lfl for the flex library just in case yywrap isn't defined everywhere
+          gcc lex.yy.c -o "$base.out" -lfl
+          
+          # Check if compilation was successful
+          if [ -f "$base.out" ]; then
+            echo "Successfully built $base.out"
+          else
+            echo "::error::Failed to build $file"
+            exit 1
+          fi
+          
+          # Clean up the generated C file to keep the workspace tidy
+          rm lex.yy.c
+          
+          # Return to original directory
+          cd - > /dev/null
+        done

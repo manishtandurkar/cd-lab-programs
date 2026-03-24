@@ -37,8 +37,8 @@ jobs:
           flex "$base.l"
           
           # Compile the generated C code
-          # Using -lfl for the flex library just in case yywrap isn't defined everywhere
-          gcc lex.yy.c -o "$base.out" -lfl
+          # Using -ll for the flex library just in case yywrap isn't defined everywhere
+          gcc lex.yy.c -o "$base.out" -ll
           
           # Check if compilation was successful
           if [ -f "$base.out" ]; then

@@ -21,25 +21,29 @@ jobs:
 
     - name: Compile all .l programs
       run: |
+        set -eo pipefail
+
+        ORIG_DIR=$(pwd)
+
         # Find all .l files recursively and compile them
         find . -type f -name "*.l" | while read -r file; do
           echo "========================================"
           echo "Compiling $file..."
-          
+
           # Get directory and base filename
           dir=$(dirname "$file")
           base=$(basename "$file" .l)
-          
+
           # Navigate to the file's directory to keep lex.yy.c local
           cd "$dir"
-          
+
           # Generate C code from Lex file
-          flex "$base.l"
-          
-          # Compile the generated C code
-          # Using -ll for the flex library just in case yywrap isn't defined everywhere
-          gcc lex.yy.c -o "$base.out" -ll
-          
+          # --noyywrap avoids needing libfl-dev just for yywrap()
+          flex --noyywrap "$base.l"
+
+          # Compile the generated C code (no -lfl needed with --noyywrap)
+          gcc lex.yy.c -o "$base.out"
+
           # Check if compilation was successful
           if [ -f "$base.out" ]; then
             echo "Successfully built $base.out"
@@ -47,10 +51,10 @@ jobs:
             echo "::error::Failed to build $file"
             exit 1
           fi
-          
+
           # Clean up the generated C file to keep the workspace tidy
           rm lex.yy.c
-          
-          # Return to original directory
-          cd - > /dev/null
+
+          # Return to original directory reliably
+          cd "$ORIG_DIR"
         done

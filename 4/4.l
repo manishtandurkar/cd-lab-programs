@@ -1,28 +1,16 @@
 %{
-#include <stdio.h>
-int single = 0, multi = 0;
+#include "y.tab.h"
+#include<stdlib.h>
+#include<string.h>
 %}
 
 %%
-\/\/[^\n]*                   { single++; }
-\/\*([^*]|\*+[^*/])*\*+\/    { multi++; }
-[ \t\n]+                ;
-.                       ;
+[a-zA-Z_][a-zA-Z0-9_]*  { yylval.text = strdup(yytext); return ID; }
+[0-9]+                  { yylval.text = strdup(yytext); return NUM; }
+[ \t\r\n]+              ;
+.                       { return yytext[0]; }
 %%
 
-int main(int argc, char *argv[]) {
-    if(argc < 2) {
-        printf("Usage: %s <filename>\n", argv[0]);
-        return 1;
-    }
-    FILE *fp = fopen(argv[1], "r");
-    if(!fp) {
-        printf("Cannot open file\n");
-        return 1;
-    }
-    yyin = fp;
-    yylex();
-    printf("Single line comments: %d\n", single);
-    printf("Multi line comments: %d\n", multi);
-    fclose(fp);
+int yywrap(void) {
+    return 1;
 }

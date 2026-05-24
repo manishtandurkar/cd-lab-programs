@@ -6,6 +6,14 @@ a.out
 # Generated C files from Lex
 lex.yy.c
 
+# Generated files from Bison/Yacc
+*.tab.c
+*.tab.h
+y.tab.c
+y.tab.h
+*.output
+parser
+
 # Object files
 *.o
 *.obj

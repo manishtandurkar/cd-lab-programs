@@ -39,8 +39,8 @@ jobs:
 
           if [ -n "$y_file" ]; then
             echo "Found Yacc file: $y_file"
-            # Generate parser from Yacc file
-            bison -d "$y_file"
+            # Generate parser from Yacc file (use -y for POSIX naming: y.tab.h)
+            bison -d -y "$y_file"
             echo "Generated parser files from $y_file"
           fi
 
@@ -52,8 +52,7 @@ jobs:
           # Determine which C files to compile
           c_files="lex.yy.c"
           if [ -n "$y_file" ]; then
-            y_base=$(basename "$y_file" .y)
-            c_files="$c_files $y_base.tab.c"
+            c_files="$c_files y.tab.c"
           fi
 
           # Compile all generated C files

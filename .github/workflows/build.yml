@@ -24,13 +24,19 @@ jobs:
         set -eo pipefail
 
         ORIG_DIR=$(pwd)
+        DIRS_ARRAY=()
 
-        # Find all directories containing .l files
-        find . -type f -name "*.l" -exec dirname {} \; | sort -u | while read -r dir; do
+        # Find all directories containing .l files and store in array to avoid subshell issues
+        while IFS= read -r -d '' dir; do
+          DIRS_ARRAY+=("$dir")
+        done < <(find . -type f -name "*.l" -printf '%h\0' | sort -uz)
+
+        # Process each directory
+        for dir in "${DIRS_ARRAY[@]}"; do
           echo "========================================"
           echo "Processing directory: $dir"
 
-          cd "$dir"
+          cd "$ORIG_DIR/$dir"
           base=$(basename "$PWD")
 
           # Check if there's a .y file in this directory
@@ -73,7 +79,4 @@ jobs:
 
           # Clean up generated files to keep the workspace tidy
           rm -f lex.yy.c *.tab.c *.tab.h
-
-          # Return to original directory reliably
-          cd "$ORIG_DIR"
         done

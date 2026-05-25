@@ -23,25 +23,19 @@ jobs:
       run: |
         set -eo pipefail
 
-        ORIG_DIR=$(pwd)
-        DIRS_ARRAY=()
+        # Find all directories containing .l files and compile them
+        find . -type f -name "*.l" | while read -r l_file; do
+          dir=$(dirname "$l_file")
+          base=$(basename "$dir")
 
-        # Find all directories containing .l files and store in array to avoid subshell issues
-        while IFS= read -r -d '' dir; do
-          DIRS_ARRAY+=("$dir")
-        done < <(find . -type f -name "*.l" -printf '%h\0' | sort -uz)
-
-        # Process each directory
-        for dir in "${DIRS_ARRAY[@]}"; do
           echo "========================================"
           echo "Processing directory: $dir"
 
-          cd "$ORIG_DIR/$dir"
-          base=$(basename "$PWD")
+          # Navigate to the directory
+          cd "$dir" || exit 1
 
           # Check if there's a .y file in this directory
           y_file=$(ls *.y 2>/dev/null | head -1)
-          l_file=$(ls *.l 2>/dev/null | head -1)
 
           if [ -n "$y_file" ]; then
             echo "Found Yacc file: $y_file"
@@ -50,13 +44,10 @@ jobs:
             echo "Generated parser files from $y_file"
           fi
 
-          if [ -n "$l_file" ]; then
-            echo "Found Lex file: $l_file"
-            # Generate lexer from Lex file
-            # --noyywrap avoids needing libfl-dev just for yywrap()
-            flex --noyywrap "$l_file"
-            echo "Generated lexer from $l_file"
-          fi
+          # Generate lexer from Lex file
+          echo "Found Lex file: $l_file"
+          flex --noyywrap "$(basename "$l_file")"
+          echo "Generated lexer"
 
           # Determine which C files to compile
           c_files="lex.yy.c"
@@ -79,4 +70,7 @@ jobs:
 
           # Clean up generated files to keep the workspace tidy
           rm -f lex.yy.c *.tab.c *.tab.h
+
+          # Return to repo root
+          cd - > /dev/null
         done

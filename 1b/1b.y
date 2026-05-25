@@ -2,7 +2,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 int yylex();
-void yyerror(const char *s);
+void yyerror();
 %}
 
 %%
@@ -15,7 +15,8 @@ B:'b' B 'c'
  |
  ;
 %%
-void yyerror(const char *s) {
+
+void yyerror() {
     printf("Invalid string\n");
 }
 

@@ -1,5 +1,5 @@
 %{
-#include <stdio.h>
+#include<stdio.h>
 int posint = 0, negint = 0, posfrac = 0, negfrac = 0, invalid = 0;
 %}
 
@@ -7,7 +7,7 @@ NUM        [0-9]+
 POSINT     {NUM}
 NEGINT     -{NUM}
 POSFRAC    ({NUM}\.{NUM}|\.[0-9]+|{NUM}\/{NUM})
-NEGFRAC    -({NUM}\.{NUM}|\.[0-9]+|{NUM}\/{NUM})
+NEGFRAC    -{POSFRAC}
 
 %%
 {NEGFRAC}   { negfrac++; }

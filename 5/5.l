@@ -11,7 +11,3 @@
 ";"          return ';';
 [ \t\n]      ;
 %%
-
-int yywrap() {
-    return 1;
-}

@@ -4,11 +4,11 @@ int lines = 1, spaces = 0, words = 0, characters = 0;
 %}
 
 %%
-[ ]       {spaces++;}
-[\t]      {spaces = spaces + 3;}
-[\n]      {lines++;}
-[a-zA-Z]* {words++; characters += yyleng;}
-#         {return 0;}
+[ ]       { spaces++; }
+[\t]      { spaces = spaces + 3; }
+[\n]      { lines++; }
+[a-zA-Z]* { words++; characters += yyleng; }
+#         { return 0; }
 %%
 
 int yywrap() {

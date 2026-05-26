@@ -6,7 +6,7 @@ int posint = 0, negint = 0, posfrac = 0, negfrac = 0, invalid = 0;
 NUM        [0-9]+
 POSINT     {NUM}
 NEGINT     -{NUM}
-POSFRAC    ({NUM}\.{NUM}|\.[0-9]+|{NUM}\/{NUM})
+POSFRAC    {NUM}\.{NUM}|\.[0-9]+|{NUM}\/{NUM}
 NEGFRAC    -{POSFRAC}
 
 %%
@@ -26,4 +26,8 @@ int main() {
     printf("Positive fractions: %d\n", posfrac);
     printf("Negative fractions: %d\n", negfrac);
     printf("Invalid inputs: %d\n", invalid);
+}
+
+int yywrap() {
+    return 1;
 }

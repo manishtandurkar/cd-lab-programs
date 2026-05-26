@@ -13,12 +13,11 @@
 ";" { return SC; }
 "," { return CM; }
 "=" { return EQ; }
-"+"|"-"|"*"|"/" { return OP; }
+"+" { return '+'; }
+"-" { return '-'; }
+"*" { return '*'; }
+"/" { return '/'; }
 [0-9]+ { return NUM; }
 [ \t\n] ;
 . ;
 %%
-
-int yywrap() { 
-    return 1; 
-}

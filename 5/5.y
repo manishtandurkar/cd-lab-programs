@@ -4,7 +4,7 @@
 #include<string.h>
 
 int yylex();
-void yyerror(char *s);
+void yyerror();
 
 int reg = 0;
 
@@ -21,51 +21,27 @@ char* newReg() {
 }
 %token <str> ID NUM
 %type <str> expr
+%left '+'
+%left '*'
 
 %%
-stmt:
-      ID '=' expr ';'
-      {
-          printf("MOV %s, %s\n", $1, $3);
-      }
-      ;
-expr:
-      expr '+' expr
-      {
-          char *r = newReg();
-
-          printf("MOV %s, %s\n", r, $1);
-          printf("ADD %s, %s\n", r, $3);
-          $$=r;
-      }
-
-    | expr '*' expr
-      {
-          char *r = newReg();
-
-          printf("MOV %s, %s\n", r, $1);
-          printf("MUL %s, %s\n", r, $3);
-
-          $$=r;
-      }
-
-    | ID
-      {
-          $$ = $1;
-      }
-
-    | NUM
-      {
-          $$ = $1;
-      }
-      ;
+stmt
+    : ID '=' expr ';' { printf("MOV %s, %s\n", $1, $3); };
+expr
+    : expr '+' expr { char *r = newReg(); printf("MOV %s, %s\n", r, $1); printf("ADD %s, %s\n", r, $3); $$ = r; }
+    | expr '*' expr { char *r = newReg(); printf("MOV %s, %s\n", r, $1); printf("MUL %s, %s\n", r, $3); $$ = r; }
+    | ID { $$ = $1; }
+    | NUM { $$ = $1; };
 %%
 
-void yyerror(char *s) {
+void yyerror() {
     printf("Error\n");
 }
 
 int main() {
     yyparse();
-    return 0;
+}
+
+int yywrap() {
+    return 1;
 }

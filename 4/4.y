@@ -1,10 +1,10 @@
 %{
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
 
-int yylex(void);
-void yyerror(const char *s);
+int yylex();
+void yyerror();
 
 struct quad {
     char op[5], a1[20], a2[20], res[20];
@@ -38,22 +38,20 @@ void assign(char *l, char *r) {
 void print() {
     int j;
     printf("\nThree Address Code:\n");
-    for (j = 0; j < i; j++) {
-        if (strcmp(q[j].op, "=") == 0)
+    for(j = 0; j < i; j++) {
+        if(strcmp(q[j].op, "=") == 0)
             printf("%s = %s\n", q[j].res, q[j].a1);
         else
             printf("%s = %s %s %s\n", q[j].res, q[j].a1, q[j].op, q[j].a2);
     }
     printf("\nQuadruples:\n");
     printf("Index\tOp\tArg1\tArg2\tResult\n");
-    for (j = 0; j < i; j++) {
-        printf("%d\t%s\t%s\t%s\t%s\n",
-            j, q[j].op, q[j].a1, q[j].a2, q[j].res);
-    }
+    for(j = 0; j < i; j++)
+        printf("%d\t%s\t%s\t%s\t%s\n", j, q[j].op, q[j].a1, q[j].a2, q[j].res);
     printf("\nTriples:\n");
     printf("Index\tOp\tArg1\tArg2\n");
-    for (j = 0; j < i; j++) {
-        if (strcmp(q[j].op, "=") == 0)
+    for(j = 0; j < i; j++) {
+        if(strcmp(q[j].op, "=") == 0)
             printf("%d\t=\t%s\t%s\n", j, q[j].a1, q[j].res);
         else
             printf("%d\t%s\t%s\t%s\n", j, q[j].op, q[j].a1, q[j].a2);
@@ -82,12 +80,15 @@ factor : '(' expr ')' { $$ = $2; }
        | NUM { $$ = $1; };
 %%
 
-void yyerror(const char *s) {
+void yyerror() {
     printf("Error in input\n");
 }
 
 int main() {
     printf("Enter expressions:\n");
     yyparse();
-    return 0;
+}
+
+int yywrap() {
+    return 1;
 }

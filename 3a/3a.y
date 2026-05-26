@@ -10,11 +10,8 @@ int count = 0;
 
 %%
 S : FORLOOP { printf("Valid\n"); printf("Number of FOR loops = %d\n", count); };
-FORLOOP
-    : FOR '(' INIT ';' COND ';' UPDATE ')' BLOCK
-      { count++; }
-    ;
-INIT : ID_LIST '=' NUM ;
+FORLOOP : FOR '(' INIT ';' COND ';' UPDATE ')' BLOCK { count++; };
+INIT  : ID_LIST '=' NUM ;
 ID_LIST : ID | ID_LIST ID ;
 COND
     : ID '<' NUM
@@ -44,10 +41,13 @@ BODY
 int main() {
     printf("Enter code:\n");
     yyparse();
-    return 0;
 }
 
 void yyerror() {
     printf("Invalid\n");
     exit(0);
+}
+
+int yywrap() {
+    return 1;
 }

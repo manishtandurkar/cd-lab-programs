@@ -12,7 +12,7 @@ void yyerror();
 
 %%
 prog: func;
-func: TYP ID LP params RP LB stmts RB { printf("Valid Function\n"); };
+func: TYP ID LB params RB LP stmts RP { printf("Valid Function\n"); };
 params
     : paramlist
     |
@@ -42,7 +42,7 @@ expr
     | expr '-' expr
     | expr '*' expr
     | expr '/' expr
-    | LP expr RP
+    | LB expr RB
     ;
 %%
 

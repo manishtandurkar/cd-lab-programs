@@ -6,10 +6,10 @@
 "int"|"void"|"char"|"float"|"double" { return TYP; }
 "return" { return RETURN; }
 [a-zA-Z_][a-zA-Z0-9_]* { return ID; }
-"(" { return LP; }
-")" { return RP; }
-"{" { return LB; }
-"}" { return RB; }
+"(" { return LB; }
+")" { return RB; }
+"{" { return LP; }
+"}" { return RP; }
 ";" { return SC; }
 "," { return CM; }
 "=" { return EQ; }

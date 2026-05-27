@@ -15,10 +15,7 @@ char* newReg() {
 }
 %}
 
-%union
-{
-    char *str;
-}
+%union { char *str; }
 %token <str> ID NUM
 %type <str> expr
 %left '+'

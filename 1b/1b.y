@@ -1,5 +1,6 @@
 %{
 #include<stdio.h>
+#include<stdlib.h>
 int yylex();
 void yyerror();
 %}
@@ -17,6 +18,7 @@ B : 'b' B 'c'
 
 void yyerror() {
     printf("Invalid string\n");
+    exit(0);
 }
 
 int main() {
